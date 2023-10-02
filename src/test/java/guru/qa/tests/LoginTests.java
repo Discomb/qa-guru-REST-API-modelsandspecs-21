@@ -1,4 +1,4 @@
-package qa.tests;
+package guru.qa.tests;
 
 import guru.qa.models.lombok.LoginBodyModel;
 import guru.qa.models.lombok.LoginResponseModel;
@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import static guru.qa.specs.LoginSpec.loginRequestSpec;
 import static guru.qa.specs.LoginSpec.loginResponseSpec;
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
 public class LoginTests extends BaseTest {

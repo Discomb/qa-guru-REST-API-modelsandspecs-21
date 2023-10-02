@@ -1,4 +1,4 @@
-package qa.models.lombok;
+package guru.qa.models.lombok;
 
 import lombok.Data;
 

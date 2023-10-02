@@ -1,4 +1,4 @@
-package qa.models.pojo;
+package guru.qa.models.pojo;
 
 public class LoginResponsePOJOModel {
     String token;

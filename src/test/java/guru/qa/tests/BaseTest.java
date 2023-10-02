@@ -1,4 +1,4 @@
-package qa.tests;
+package guru.qa.tests;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
