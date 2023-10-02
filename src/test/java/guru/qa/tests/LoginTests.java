@@ -1,8 +1,8 @@
 package guru.qa.tests;
 
-import guru.qa.models.LoginBodyModel;
-import guru.qa.models.LoginResponseModel;
-import guru.qa.models.MissingPasswordResponseModel;
+import guru.qa.models.login.LoginBodyModel;
+import guru.qa.models.login.LoginResponseModel;
+import guru.qa.models.common.MissingPasswordResponseModel;
 import org.junit.jupiter.api.Test;
 
 import static guru.qa.specs.LoginSpec.*;

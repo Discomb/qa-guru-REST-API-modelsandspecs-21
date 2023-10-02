@@ -1,8 +1,8 @@
 package guru.qa.tests;
 
-import guru.qa.models.MissingPasswordResponseModel;
-import guru.qa.models.RegistrationBodyModel;
-import guru.qa.models.RegistrationResponseModel;
+import guru.qa.models.common.MissingPasswordResponseModel;
+import guru.qa.models.registration.RegistrationBodyModel;
+import guru.qa.models.registration.RegistrationResponseModel;
 import org.junit.jupiter.api.Test;
 
 import static guru.qa.specs.RegistrationSpec.*;
