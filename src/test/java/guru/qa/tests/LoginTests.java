@@ -1,44 +1,18 @@
 package guru.qa.tests;
 
-import guru.qa.models.lombok.LoginBodyModel;
-import guru.qa.models.lombok.LoginResponseModel;
-import guru.qa.models.pojo.LoginBodyPOJOModel;
-import guru.qa.models.pojo.LoginResponsePOJOModel;
-import io.restassured.http.ContentType;
+import guru.qa.models.LoginBodyModel;
+import guru.qa.models.LoginResponseModel;
+import guru.qa.models.MissingPasswordResponseModel;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.specs.LoginSpec.loginRequestSpec;
-import static guru.qa.specs.LoginSpec.loginResponseSpec;
+import static guru.qa.specs.LoginSpec.*;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
 
 public class LoginTests extends BaseTest {
 
     @Test
     void successfulLoginTest() {
-
-        LoginBodyPOJOModel authData = new LoginBodyPOJOModel();
-        authData.setEmail("eve.holt@reqres.in");
-        authData.setPassword("cityslicka");
-
-        LoginResponsePOJOModel response = given()
-                .log().all()
-                .contentType(ContentType.JSON)
-                .body(authData)
-                .when()
-                .post("/login")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
-                .extract().as(LoginResponsePOJOModel.class);
-
-        assertThat(response.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
-    }
-
-    @Test
-    void successfulLoginTestWithLombok() {
 
         LoginBodyModel authData = new LoginBodyModel();
         authData.setEmail("eve.holt@reqres.in");
@@ -58,16 +32,17 @@ public class LoginTests extends BaseTest {
 
     @Test
     void unsuccessfulLoginTest() {
-        given()
-                .log().all()
-                .contentType(ContentType.JSON)
-                .body("{ \"email\": \"eve.holt@reqres.in\"}")
+        LoginBodyModel incompleteAuthData = new LoginBodyModel();
+        incompleteAuthData.setEmail("eve.holt@reqres.in");
+
+        MissingPasswordResponseModel response = given(loginRequestSpec)
+                .body(incompleteAuthData)
                 .when()
                 .post("/login")
                 .then()
-                .log().status()
-                .log().body()
-                .statusCode(400)
-                .body("error", is("Missing password"));
+                .spec(missingPasswordSpec)
+                .extract().as(MissingPasswordResponseModel.class);
+
+        assertThat(response.getError()).isEqualTo("Missing password");
     }
 }
