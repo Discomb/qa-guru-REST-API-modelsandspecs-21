@@ -44,7 +44,7 @@ public class LoginTests extends BaseTest {
                 .when()
                 .post("/login")
                 .then()
-                .spec(missingPasswordSpec)
+                .spec(missingPasswordLoginSpec)
                 .extract().as(MissingPasswordResponseModel.class));
 
         step("Verify response", () ->

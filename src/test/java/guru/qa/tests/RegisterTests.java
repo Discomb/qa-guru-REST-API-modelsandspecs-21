@@ -1,41 +1,54 @@
 package guru.qa.tests;
 
-import io.restassured.http.ContentType;
+import guru.qa.models.MissingPasswordResponseModel;
+import guru.qa.models.RegistrationBodyModel;
+import guru.qa.models.RegistrationResponseModel;
 import org.junit.jupiter.api.Test;
 
+import static guru.qa.specs.RegistrationSpec.*;
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RegisterTests extends BaseTest {
 
     @Test
     void successfulRegistrationTest() {
-        given()
-                .log().all()
-                .contentType(ContentType.JSON)
-                .body("{\"email\": \"eve.holt@reqres.in\", \"password\": \"pistol\"}")
-                .when()
-                .post("/register")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
-                .body("id", is(4))
-                .body("token", is("QpwL5tke4Pnpja7X4"));
+
+        RegistrationBodyModel regData = new RegistrationBodyModel();
+        regData.setEmail("eve.holt@reqres.in");
+        regData.setPassword("pistol");
+
+        RegistrationResponseModel response = step("Make a registration request", () ->
+                given(registrationRequestSpec)
+                        .body(regData)
+                        .when()
+                        .post("/register")
+                        .then()
+                        .spec(registrationResponseSpec)
+                        .extract().as(RegistrationResponseModel.class));
+
+        step("Verify response", () -> {
+            assertThat(response.getId()).isEqualTo(4);
+            assertThat(response.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
+        });
     }
 
     @Test
     void unsuccessfulRegistrationTest() {
-        given()
-                .log().all()
-                .contentType(ContentType.JSON)
-                .body("{\"email\": \"sydney@fife\"}")
-                .when()
-                .post("/register")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(400)
-                .body("error", is("Missing password"));
+        RegistrationBodyModel regData = new RegistrationBodyModel();
+        regData.setEmail("eve.holt@reqres.in");
+
+        MissingPasswordResponseModel response = step("Make a registration request without password", () ->
+                given(registrationRequestSpec)
+                        .body(regData)
+                        .when()
+                        .post("/register")
+                        .then()
+                        .spec(missingPasswordRegistrationSpec)
+                        .extract().as(MissingPasswordResponseModel.class));
+
+        step("Verify response", () ->
+            assertThat(response.getError()).isEqualTo("Missing password"));
     }
 }
