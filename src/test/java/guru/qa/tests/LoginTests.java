@@ -6,6 +6,7 @@ import guru.qa.models.MissingPasswordResponseModel;
 import org.junit.jupiter.api.Test;
 
 import static guru.qa.specs.LoginSpec.*;
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,15 +19,17 @@ public class LoginTests extends BaseTest {
         authData.setEmail("eve.holt@reqres.in");
         authData.setPassword("cityslicka");
 
-        LoginResponseModel response = given(loginRequestSpec)
+        LoginResponseModel response = step("Make a login request", () ->
+            given(loginRequestSpec)
                 .body(authData)
                 .when()
                 .post("/login")
                 .then()
                 .spec(loginResponseSpec)
-                .extract().as(LoginResponseModel.class);
+                .extract().as(LoginResponseModel.class));
 
-        assertThat(response.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
+        step("Verify response", () ->
+            assertThat(response.getToken()).isEqualTo("QpwL5tke4Pnpja7X4"));
     }
 
 
@@ -35,14 +38,16 @@ public class LoginTests extends BaseTest {
         LoginBodyModel incompleteAuthData = new LoginBodyModel();
         incompleteAuthData.setEmail("eve.holt@reqres.in");
 
-        MissingPasswordResponseModel response = given(loginRequestSpec)
+        MissingPasswordResponseModel response = step("Make a login request without password", () ->
+            given(loginRequestSpec)
                 .body(incompleteAuthData)
                 .when()
                 .post("/login")
                 .then()
                 .spec(missingPasswordSpec)
-                .extract().as(MissingPasswordResponseModel.class);
+                .extract().as(MissingPasswordResponseModel.class));
 
-        assertThat(response.getError()).isEqualTo("Missing password");
+        step("Verify response", () ->
+            assertThat(response.getError()).isEqualTo("Missing password"));
     }
 }
